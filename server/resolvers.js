@@ -11,6 +11,13 @@ const Query = {
     company: (root, {id}) => db.companies.get(id),
 };
 
+const Mutation = {
+    createJob: (root, {input}) => {
+        const id = db.jobs.create(input);
+        return db.jobs.get(id);
+    }
+}
+
 const Job = {
     // The first parameter is the parent object
     // So, as Company is inside Job, the first argument is Job
@@ -21,4 +28,4 @@ const Company = {
     jobs: (company) => db.jobs.list().filter((job) => job.companyId === company.id)
 }
 
-module.exports = { Query, Job, Company };
+module.exports = { Query, Mutation, Job, Company };
