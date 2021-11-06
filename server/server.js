@@ -19,7 +19,11 @@ app.use(cors(), bodyParser.json(), expressJwt({
 async function startApolloServer() {
   const typeDefs = gql(fs.readFileSync('./schema.graphql', {encoding: 'utf-8'}));
   const resolvers = require('./resolvers');
-  const apolloServer = new ApolloServer({typeDefs, resolvers});
+  const context = ({req}) => ({
+    method: req.method,
+    user: req.user,
+  });
+  const apolloServer = new ApolloServer({typeDefs, resolvers, context});
   await apolloServer.start();
   apolloServer.applyMiddleware({app, path: '/graphql'});
 }
@@ -28,7 +32,7 @@ startApolloServer();
 app.post('/login', (req, res) => {
   const {email, password} = req.body;
   const user = db.users.list().find((user) => user.email === email);
-  if (!(user && user.password === password)) {
+  if (!user?.password === password) {
     res.sendStatus(401);
     return;
   }

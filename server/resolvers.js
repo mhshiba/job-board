@@ -12,7 +12,10 @@ const Query = {
 };
 
 const Mutation = {
-    createJob: (root, {input}) => {
+    createJob: (root, {input}, context) => {
+        // check user auth
+        console.log(context);
+        if (true) return null;
         const id = db.jobs.create(input);
         return db.jobs.get(id);
     }
