@@ -21,7 +21,7 @@ async function startApolloServer() {
   const resolvers = require('./resolvers');
   const context = ({req}) => ({
     method: req.method,
-    user: req.user,
+    user: req.user && db.users.get(req.user.sub),
   });
   const apolloServer = new ApolloServer({typeDefs, resolvers, context});
   await apolloServer.start();

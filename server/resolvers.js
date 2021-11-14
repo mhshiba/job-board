@@ -12,11 +12,12 @@ const Query = {
 };
 
 const Mutation = {
-    createJob: (root, {input}, context) => {
+    createJob: (root, {input}, {user}) => {
         // check user auth
-        console.log(context);
-        if (true) return null;
-        const id = db.jobs.create(input);
+        if (!user) {
+          throw new Error('Unauthorized');
+        }
+        const id = db.jobs.create({...input, companyId: user.companyId});
         return db.jobs.get(id);
     }
 }
